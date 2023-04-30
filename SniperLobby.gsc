@@ -41,11 +41,14 @@ checkIfValidWeapons()
         weaponNameShort = strtok( weaponList[i], "_" )[0];
 
         if ( !checkIfAllowed( weaponNameShort ) )
-        {        
-            self takeWeapon( weaponList[i] );
-            self giveWeapon( "springfield_scoped_mp" );
-            wait (0.2);
-            self switchToWeapon( "springfield_scoped_mp" );
+        {   
+            if ( weaponList[i] != "ptrs41_mp" )
+            {
+                self takeWeapon( weaponList[i] );
+                self giveWeapon( "ptrs41_mp" );
+                wait (0.2);
+                self switchToWeapon( "ptrs41_mp" );
+            }
         }
     }
 }
@@ -58,7 +61,7 @@ checkIfAllowed( weapon )
         case "mosin":
         case "kar98k":
         case "lee_enfield":
-        case "ptrs41":
+        //case "ptrs41":
             return true;
         default:
             return false;
