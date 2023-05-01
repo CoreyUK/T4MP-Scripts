@@ -16,39 +16,57 @@ onPlayerConnect()
     }
 }
 
-onPlayerSpawned()
+onPlayerSpawned() 
 {
     self endon("disconnect");
 
     for(;;)
     {
-        self waittill( "spawned_player" );
+        self waittill( "give_map" );
         self checkIfValidWeapons();  
     }
 }
 
+allowedWeapons( weapon )
+{
+    switch( weapon )
+    {
+        case "ptrs41_mp":
+        case "springfield_scoped_mp":
+        case "type99rifle_scoped_mp":
+        case "kar98k_scoped_mp":
+        case "mosinrifle_scoped_mp":
+            return true;
+        default:
+            return false;
+    }
+    return false;
+}
+
 checkIfValidWeapons()
 {
-    // Replace Secondaries
-    self takeWeapon( "tabun_gas_mp" );
-    self takeWeapon( "signal_flare_mp" );
-    self giveWeapon( "m8_white_smoke_mp" );
+    // Replace Invalid Weapons
+    primaryWeapon = self GetCurrentWeapon();
+    self takeAllWeapons();
 
-    // Replace Banned Weapons
-    weaponList = self getWeaponsList();
-    for ( i = 0; i < weaponList.size; i++ ) 
+    if ( !allowedWeapons( primaryWeapon ) )
+    {        
+        self giveWeapon( "springfield_scoped_mp" );
+        wait ( 0.2 );
+        self SwitchToWeapon( "springfield_scoped_mp" );
+        wait ( 0.2 );
+        self GiveMaxAmmo( "springfield_scoped_mp" );
+    }
+    else 
     {
-        weaponNameShort = strtok( weaponList[i], "_" )[0];
-        if ( blockedWeapons( weaponNameShort ) )
-        {        
-            self takeWeapon( weaponList[i] );
-            self giveWeapon( "springfield_scoped_mp" );
-            wait (0.2);
-            self switchToWeapon( "springfield_scoped_mp" );
-        }
+        self giveWeapon( primaryWeapon );
+        wait ( 0.2 );
+        self SwitchToWeapon( primaryWeapon );
+        wait ( 0.2 );
+        self GiveMaxAmmo( primaryWeapon );
     }
 
-    // Replace Banned Perks
+    // Replace Blocked Perks
     perks = maps\mp\gametypes\_globallogic::getPerks( self );
     for( i = 0; i < perks.size; i++ )
     {
@@ -59,33 +77,15 @@ checkIfValidWeapons()
     }
 }
 
-blockedWeapons( weapon )
+blockedPerks( perk )
 {
-	//self iPrintLnBold( weapon );
-    switch( weapon )
+    switch( perk )
     {
-        case "type100smg":
-        case "thompson":
-        case "mp40":
-        case "stg44":
-        case "sten":
-        case "mg42":
-        case "type99":
-        case "bar":
-        case "fg42":
-        case "bren":
-        case "type99_lmg":
-        case "ppsh":
-        case "30cal":
-        case "dp28":
-        case "svt40":
-        case "m1carbine":
-        case "gewehr43":
-        case "doublebarrel":
-        case "shotgun":
-        case "doublebarreledshotgun":
-        case "m1garand":
-    
+        case "specialty_armorvest":
+        case "specialty_pistoldeath":
+        case "specialty_weapon_flamethrower":
+        case "specialty_grenadepulldeath":
+        case "specialty_weapon_bouncing_betty":
             return true;
         default:
             return false;
@@ -113,22 +113,4 @@ replacePerks( index, perk )
         default:
             break;
     }
-}
-
-blockedPerks( perk )
-{
-    switch( perk )
-    {
-        case "specialty_armorvest":
-        case "specialty_pistoldeath":
-        case "specialty_weapon_bazooka":
-        case "specialty_weapon_flamethrower":
-        case "specialty_grenadepulldeath":
-        case "specialty_weapon_satchel_charge":
-        case "specialty_weapon_bouncing_betty":
-            return true;
-        default:
-            return false;
-    }
-    return false;
 }
