@@ -53,14 +53,22 @@ checkIfValidWeapons()
     {        
         self giveWeapon( "springfield_scoped_mp" );
         wait ( 0.2 );
-        self SwitchToWeapon( "springfield_scoped_mp" );
-        wait ( 0.2 );
+        self giveWeapon("colt_mp");
+		wait ( 0.2 );
+        self SwitchToWeapon( "colt_mp" );    //remove ammo from pistol
+		self SetWeaponAmmoClip( "colt_mp", 0 );
+		self SetWeaponAmmoStock( "colt_mp", 0 );
+		self SwitchToWeapon( "springfield_scoped_mp" );
         self GiveMaxAmmo( "springfield_scoped_mp" );
+        
     }
     else 
     {
         self giveWeapon( primaryWeapon );
+        self giveWeapon("colt_mp");
         wait ( 0.2 );
+        self SetWeaponAmmoClip( "colt_mp", 0 );
+		self SetWeaponAmmoStock( "colt_mp", 0 );
         self SwitchToWeapon( primaryWeapon );
         wait ( 0.2 );
         self GiveMaxAmmo( primaryWeapon );
